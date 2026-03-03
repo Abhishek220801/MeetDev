@@ -1,24 +1,24 @@
 import multer from "multer";
-import path from 'path'
+import { ACCEPT_FILE_TYPES } from "../constants.js";
 
 const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        return cb(null, 'uploads/');
-    },
+    destination: '../../uploads',
     filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + path.extname(file.originalname));
+        cb(null, `${crypto.randomUUID()}-${file.originalname}`)
+    } 
+});
+
+const fileFilter = (req, file, cb) => {
+    if(!ACCEPT_FILE_TYPES.includes(file.mimetype)){
+        return cb(new Error('Incorrect file type'), false);
     }
-}); // or diskStorage later
+    cb(null, true);
+}
+
 const upload = multer({
     storage,
     limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
-    fileFilter: (req, file, cb) => {
-        if(!file.mimetype.startsWith('image/')){
-            return cb(new Error('Only image files are allowed'), false);
-        }
-        cb(null, true);
-    }
+    fileFilter
 });
 
 export default upload;

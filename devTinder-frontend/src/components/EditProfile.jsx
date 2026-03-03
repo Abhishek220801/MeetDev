@@ -74,7 +74,7 @@ const EditProfile = ({ user }) => {
       return
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file && file.size > 5 * 1024 * 1024) {
       setError("Image size must be less than 5MB")
       return
     }
@@ -96,6 +96,7 @@ const EditProfile = ({ user }) => {
       setError("First name and email are required")
       return
     }
+
     saveProfile()
   }
 
@@ -219,7 +220,7 @@ const EditProfile = ({ user }) => {
                   Profile Photo
                 </label>
                 <div className="flex items-center gap-4">
-                  {displayPhotoUrl && (
+                  {/* {displayPhotoUrl && (
                     <div className="w-14 h-14 rounded-xl overflow-hidden ring-2 ring-purple-500 ring-offset-2">
                       <img
                         src={displayPhotoUrl}
@@ -227,7 +228,7 @@ const EditProfile = ({ user }) => {
                         className="w-full h-full object-cover"
                       />
                     </div>
-                  )}
+                  )} */}
                   <label className="flex-1 flex items-center justify-center gap-2 px-4 py-2 text-sm bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                     <Upload size={18} className="text-gray-600" />
                     <span className="text-xs text-gray-600 font-medium">
@@ -394,7 +395,6 @@ const EditProfile = ({ user }) => {
                 </label>
                 <input
                   type="text"
-                  value={formData.skills.join(", ")}
                   onChange={(e) => {
                     const skillsArray = e.target.value
                       .split(",")
@@ -425,7 +425,7 @@ const EditProfile = ({ user }) => {
               {/* Social Links */}
               <div className="space-y-4 mb-4">
                 <h3 className="text-sm font-semibold text-gray-900">Social Links</h3>
-                
+
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">
                     <Github size={14} className="inline mr-1" />

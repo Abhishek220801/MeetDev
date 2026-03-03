@@ -1,5 +1,4 @@
 import express from 'express'
-import validator from 'validator'
 import User from '../models/user.js'
 const authRouter = express.Router();
 
@@ -9,12 +8,10 @@ authRouter.post('/signup', async (req, res) => {
     try{
         validateSignUpData(req);
 
-        // encrypt the password 
         const {firstName, lastName, emailId, password} = req.body;
         const foundUser = await User.findOne({emailId});
         if(foundUser) return res.status(400).send("That email address is already taken.");
 
-        // create instance of user model
         const user = new User({
             firstName,
             lastName,
@@ -62,7 +59,6 @@ authRouter.post('/logout', async (req, res) => {
     .cookie('token', null, {
         expires: new Date(Date.now()),  // expiring the token at current time 
     }) 
-    // express method chaining
     .send('Logged out successfully');
 })
 

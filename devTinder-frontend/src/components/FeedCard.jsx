@@ -37,16 +37,16 @@ const FeedCard = ({ user, variant }) => {
   const isPreview = variant === "preview"
 
   const getPhotoUrl = (photoUrl) => {
+    console.log(photoUrl);
     if (!photoUrl) return "https://geographyandyou.com/images/user-profile.png"
 
     if (photoUrl.startsWith("blob:")) {
       return photoUrl
     }
-
     if (photoUrl.startsWith("/uploads/")) {
       return `${STATIC_URL}${photoUrl}`
     }
-
+    console.log(photoUrl);
     if (photoUrl.startsWith("http")) {
       return photoUrl
     }
@@ -109,7 +109,7 @@ const FeedCard = ({ user, variant }) => {
                   </div>
                 )}
                 {location && (
-                  <div className="flex items-center gap-2 text-gray-200">
+                  <div className="flex items-center gap-4 text-gray-200">
                     <MapPin size={14} />
                     <span className="text-xs">{location}</span>
                   </div>

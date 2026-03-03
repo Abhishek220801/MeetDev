@@ -7,8 +7,8 @@ import { BASE_URL } from "../utils/constants"
 import { toast } from "react-toastify"
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("")
-  const [password, setPassword] = useState("")
+  const [emailId, setEmailId] = useState("test@gmail.com")
+  const [password, setPassword] = useState("Test@123")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [isLoginForm, setIsLoginForm] = useState(true)
@@ -20,7 +20,8 @@ const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setError("")
     setIsLoading(true)
     try {
@@ -98,9 +99,8 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Form - more compact */}
           <div className="px-6 py-6">
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {!isLoginForm && (
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -115,6 +115,7 @@ const Login = () => {
                       onChange={(e) => setFirstName(e.target.value)}
                       onKeyDown={handleKeyDown}
                       disabled={isLoading}
+                      required
                     />
                   </div>
                   <div>
@@ -146,6 +147,7 @@ const Login = () => {
                   onChange={(e) => setEmailId(e.target.value)}
                   onKeyDown={handleKeyDown}
                   disabled={isLoading}
+                  required
                 />
               </div>
 
@@ -162,6 +164,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={handleKeyDown}
                     disabled={isLoading}
+                    required
                   />
                   <span
                     className="password-toggle-icon absolute right-4 top-[50%] translate-y-[-50%] h-6 w-6 cursor-pointer"
@@ -195,8 +198,7 @@ const Login = () => {
               )}
 
               <button
-                type="button"
-                onClick={handleSubmit}
+                type="submit"
                 disabled={isLoading}
                 className="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white font-semibold py-2.5 px-4 rounded-lg hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none flex items-center justify-center gap-2 text-sm"
               >

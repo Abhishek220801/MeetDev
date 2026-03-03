@@ -2,10 +2,13 @@ import express from "express"
 import { validateProfileEditData } from "../utils/validation.js"
 import bcrypt from "bcrypt"
 import validator from "validator"
+import { uploadToS3 } from "../utils/uploadToS3.js"
+
 const profileRouter = express.Router()
 
 import { userAuth } from "../middlewares/auth.js"
 import upload from "../middlewares/upload.js"
+import { ACCEPT_FILE_TYPES, MAX_FILE_SIZE } from "../constants.js"
 
 profileRouter.get("/", userAuth, async (req, res) => {
   try {
@@ -16,55 +19,10 @@ profileRouter.get("/", userAuth, async (req, res) => {
   }
 })
 
-// profileRouter.patch(
-//   "/edit",
-//   userAuth,
-//   upload.single("photo"),
-//   async (req, res) => {
-//     try {
-//       if (!validateProfileEditData(req)) {
-//         return res.status(400).json({ message: "Invalid Edit Request" })
-//       }
-//       const loggedInUser = req.user
-//       const updates = req.body || {}
-//       // Reject empty update
-//       if (Object.keys(updates).length === 0 && !req.file) {
-//         return res.status(400).json({ message: "No fields provided" })
-//       }
-//       if(updates.skills && typeof updates.skills === 'string'){
-//         try{
-//           updates.skills = JSON.parse(updates.skills);
-//         } catch (e) {
-//           console.error('Skills parsing error:', e)
-//           updates.skills = []
-//         }
-//       }
-//       Object.keys(updates).forEach((key) => {
-//         if (updates[key] === undefined || updates[key] === '') return;
-//         if(Array.isArray(updates[key]) && updates[key].length === 0) return;
-//         loggedInUser[key] = updates[key];
-//       })
-//       if (req.file) {
-//         loggedInUser.photoUrl = `/uploads/${req.file.filename}`
-//       }
-//       await loggedInUser.save()
-//       return res.json({
-//         message: `${loggedInUser.firstName}, your profile was updated successfully!`,
-//         data: loggedInUser,
-//           })
-//     } catch (err) {
-//       console.error('Profile edit error:', err)
-//       return res.status(400).json({
-//         message: err.message || "Edit request failed",
-//       })
-//     }
-//   }
-// )
-
 profileRouter.patch(
   "/edit",
+  upload.single('photo'),
   userAuth,
-  upload.single("photo"),
   async (req, res) => {
     try {
       if (!validateProfileEditData(req)) {
@@ -107,9 +65,13 @@ profileRouter.patch(
       })
 
       // Handle file upload
-      if (req.file) {
-        const photoPath = `/uploads/${req.file.filename}`
-        loggedInUser.photoUrl = photoPath
+      console.log(req.file.path);
+      if (req.file.path) {
+        const photoPath = req.file.path;
+        const s3Url = await uploadToS3(photoPath, req.file.mimetype);
+        const oldS3Url = loggedInUser.photoUrl
+        loggedInUser.photoUrl = s3Url;
+        // now delete the old url once user uploads new (PENDING)
       }
 
       const savedUser = await loggedInUser.save()
