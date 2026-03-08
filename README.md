@@ -53,7 +53,7 @@ DevTinder goes beyond simple CRUD apps — it focuses on **backend architecture,
 ### 📧 Email Notifications (NEW!)
 - **AWS SES Integration** for transactional emails
 - Beautiful, responsive HTML email templates
-- Connection request notifications
+- Connection request email notifications
 - Welcome emails for new users (coming soon)
 - Password reset functionality (coming soon)
 - Custom branded email design with gradient styling 
